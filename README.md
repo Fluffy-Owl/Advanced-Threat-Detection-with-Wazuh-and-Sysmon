@@ -17,19 +17,5 @@
 
 ## Steps
 
-### Step 1: rfhouwfhhwfh
-#### 1. Create telemryrgr
-dojfvhouierhj
-erkgnohnrgorhn
+### Step 1: 
 
-erokngoierhr
-knergohnerih
-lkhneohnre
-erohnoerjn
-
-#### 2. soifhiorhr
-pwifjwrhjfpij
-oijwrhnfohr
-
-oihfohr
-\orifhirhf
