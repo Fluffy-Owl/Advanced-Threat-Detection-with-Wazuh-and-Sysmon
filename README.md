@@ -34,17 +34,10 @@ The Wazuh instance was deployed in the cloud using DigitalOcean.
    
 2. **Configure Sysmon**: Use a configuration file to capture relevant events. You can use the example configuration file from the [SwiftOnSecurity GitHub repository](https://github.com/SwiftOnSecurity/sysmon-config).
 
-   ```xml
-   <Sysmon schemaversion="4.30">
-       <EventFiltering>
-           <RuleGroup name="Default" groupRelation="or">
-               <FileCreateTime onmatch="exclude">
-                   <Image condition="end with">mimikatz.exe</Image>
-               </FileCreateTime>
-           </RuleGroup>
-       </EventFiltering>
-   </Sysmon>
-   ```
+<img width="572" alt="Installing sysmon" src="https://github.com/user-attachments/assets/c5291c4b-f46c-494d-aaec-c0816c724c4f">
+
+*Figure 1: Installing sysmon on the Windows Agent.*
+
 
 ### **3. Ingesting Sysmon Logs into Wazuh**
 
@@ -58,13 +51,20 @@ The Wazuh instance was deployed in the cloud using DigitalOcean.
 
    ```xml
    <group name="sysmon,">
-       <rule id="100001" level="10">
-           <decoded_as>sysmon</decoded_as>
-           <field name="original_file_name">mimikatz.exe</field>
-           <description>Detect Mimikatz activity based on original file name</description>
+       <rule id="100002" level="15">
+           <if_group>sysmon_event1</if_group>
+           <field name="win.eventdata.originalFileName" type="pcre2">(?i)mimikatz\.exe</field>
+           <description>Mimikatz Usage Detected</description>
+           <mitre>
+             <id>T1003</id>
+           </mitre>
        </rule>
    </group>
    ```
+<img width="593" alt="Adding local rules in Wazuh" src="https://github.com/user-attachments/assets/667fd8d7-348f-4258-9e76-773b8ef6a376">
+
+*Figure 2: Adding local rule in Wazuh (hosted in the cloud).*
+   
 
 2. **Reload Wazuh Rules**: Apply the new rule by reloading the Wazuh rules.
 
@@ -78,13 +78,36 @@ The Wazuh instance was deployed in the cloud using DigitalOcean.
 
 2. **Review Alerts**: Check the Wazuh dashboard or log files to ensure that the rule is working as expected.
 
-## **Screenshots**
+## **Screenshots from the project**
 
-(Add your screenshots here to illustrate the setup, configuration, and results.)
+<img width="571" alt="Wazuh Dashboard" src="https://github.com/user-attachments/assets/8604a5bc-60b8-4c8c-b5e2-ea7fc3a2fe1c">
+
+*Figure 3: Wazuh dashboard showing the overview of active alerts and system status.*
+
+<img width="496" alt="Run Catch me if you can" src="https://github.com/user-attachments/assets/ace86dbd-55d9-43a3-bfce-262a4c2250f0">
+
+*Figure 4: Running Mimikatz in the Windows machine, only this time we change the file name to "catchmeifyoucan".*
+
+
+<img width="572" alt="No Alerts" src="https://github.com/user-attachments/assets/3a666857-0d2e-4e51-9edb-3fd586300d0e">
+<img width="574" alt="After Alert" src="https://github.com/user-attachments/assets/8daabb20-8437-447b-8bc5-3518a59d7a34">
+
+
+*Figure 5 & 6: Before and after creation of the rule. Figure 6 shows that there is a new alert picked up that uses Mimikatz.*
+
+<img width="572" alt="Mimikatz after alertds" src="https://github.com/user-attachments/assets/b1214ffa-0f6d-44c7-8c91-238e6c7cc27d">
+<img width="402" alt="Original Files" src="https://github.com/user-attachments/assets/731c97ff-09bb-4d30-88cd-80f29bd521fc">
+
+*Figure 7 & 8: Detecting Mimikatz using the OriginalFileName data.*
+
+
 
 ## **Conclusion**
 
 This project successfully demonstrates how to use Wazuh and Sysmon to detect the presence of Mimikatz by leveraging original file name data, even if the file name is changed by an attacker. This approach enhances the ability to detect and respond to sophisticated threats in a Windows environment.
+
+---
+
 
 ## **References**
 
@@ -94,4 +117,3 @@ This project successfully demonstrates how to use Wazuh and Sysmon to detect the
 
 ---
 
-Let me know if you need any more adjustments!
